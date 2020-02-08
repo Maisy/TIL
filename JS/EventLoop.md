@@ -2,9 +2,9 @@
 
 > https://dev.to/lydiahallie/javascript-visualized-event-loop-3dif?fbclid=IwAR3cjXGvUY91u4_8aXIOUzZ-Qm7tCPGVV104FkfNd9Bi4Gm8S93-QDsE0vQ
 
-자바사크립트는 싱글스레드다: 한 task만 한번에 실행할수있다. 그렇게 큰 문제는 아니지만, 30초가 걸리는 작업을 실행한다고 생각해봐... 이 task를 실행시키는 동안 30초를 기다리는겨. (JavaScript는 default로 브라우저의 메인스레드에서 실행되므로 전체 UI가 중지돼) 지금은 2019년이니까 아무도 느리거나 응답을 안하는 웹사이트는 원하지않것지~~?
+자바사크립트는 싱글스레드야: 한 task만 한번에 실행할수있지. 그리 큰 문제가 아닌것같지만 30초가 걸리는 작업을 실행한다고 생각해봐... 한 task를 실행시키는 동안 30초를 기다리는겨. (JavaScript는 default로 브라우저의 메인스레드에서 실행되므로 전체 UI가 중지돼) 지금은 2019년이니까 아무도 느리거나 응답을 안하는 웹사이트는 원하지않것지~?
 
-Luckily, 브라우저는 (자바스크립트 엔진이 제공하지않는) 몇가지 특징이 있어: Web API. 이건 DOM API, `setTimeout`, HTTP requests 등을 포함해. 이건 우리가 async, non-blocking 할수있게 도와주지!!
+다행히도 브라우저는 (자바스크립트 엔진이 제공하지 않는) 몇가지 특징이 있어: Web API. 이건 DOM API, `setTimeout`, HTTP requests 등을 포함해. 이건 우리가 async, non-blocking 할수있게 도와주지!!
 
 우리가 함수를 호출했을때, 그건 **call stack**이라고 불리는 무언가에다 추가해. 그 call stack은 JS engine의 일부분인데, 브라우저마다 다르진않아. 걍 stack이고 first in, last out 이 라는거지. 함수가 값을 return 했을때, stack에서 튀어나오는거야.
 
@@ -16,7 +16,7 @@ function respond() {
 }
 ```
 
-저 `respond` 함수는 `setTimeout`을 리턴해. `setTimeout`은 Web API로 우리한테 제공되는디(?): 우리가 main thread를 blocking 하지않고 task를 delaty할수있게 해주는거야. `setTimeout` 함수에 전달한 callback함수, arrow function `() => {return 'Hey'}`는 **Web API**에 추가돼. 그 동안 `setTimeout`함수와 `respond`함수는 stack에서 튀어나오고, 둘다 그 값들을 리턴해!!
+저 `respond` 함수는 `setTimeout`을 리턴해. `setTimeout`은 Web API를 통해서 제공되는데, 우리가 main thread를 blocking 하지않고 task를 delay할수있게 해주는거야. `setTimeout` 함수에 전달한 callback함수, arrow function `() => {return 'Hey'}`는 **Web API**에 추가돼. 그 동안 `setTimeout`함수와 `respond`함수는 stack에서 튀어나오고, 둘다 그 값들을 리턴해!!
 
 Web API에 있는 timer는 우리가 argument로 넘겼던 1000ms 동안 실행돼. 그 callback은 바로 call stack에 추가되진 않고, 대신에 **queue**에 전달돼
 
