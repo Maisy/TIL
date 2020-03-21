@@ -2,9 +2,9 @@
 - web에서 입력받는 pw를 encrypt해서 넘기고싶다
 
 ### server
+- node 내장 모듈인 [crypto](https://nodejs.org/api/crypto.html) 사용
 ```js
-const NodeRSA = require('node-rsa');
-const key = new NodeRSA({ b: 512 });
+const crypto = require('crypto');
 const rsaKeyMap = {};
 
 //-------------------------------------------------------------
@@ -69,6 +69,9 @@ exports.getPublicKey = getPublicKey;
 ```
 
 ### client
+- js library [jsencrypt](https://github.com/travist/jsencrypt) 사용 (web에서만 사용가능)
+
+
 ```js
 import JSEncrypt from 'jsencrypt';
 const encrypt = new JSEncrypt();
