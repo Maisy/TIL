@@ -11,10 +11,24 @@ const rsaKeyMap = {};
 // /api/rsa/publickey
 //-------------------------------------------------------------
 function getPublicKey(req, res, next) {
-  const publicKey = key.exportKey('pkcs8-public-pem');
-  const privateKey = key.exportKey('pkcs8-private-pem');
+  const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
+    modulusLength: 1024,
+    publicKeyEncoding: {
+      type: 'spki',
+      format: 'pem'
+    },
+    privateKeyEncoding: {
+      type: 'pkcs8',
+      format: 'pem',
+      cipher: 'aes-256-cbc',
+      passphrase: 'top secret'
+    }
+  });
+
+  console.log(publicKey);
+  console.log(privateKey);
   rsaKeyMap[publicKey] = privateKey;
-  res.json({ publicKey });
+  res.json({ publicKey, privateKey });
 }
 
 //-------------------------------------------------------------
@@ -23,13 +37,29 @@ function getPublicKey(req, res, next) {
 function decryptTest(req, res, next) {
   const publicKey = req.body.publicKey;
   const encrypted = req.body.encrypted;
-  const privateKeyStr = rsaKeyMap[publicKey];
+  const privateKey = rsaKeyMap[publicKey];
 
-  const privateKey = new NodeRSA(privateKeyStr, 'pkcs8-private');
-  privateKey.setOptions({ encryptionScheme: 'pkcs1' });
-  const decrypted = privateKey.decrypt(encrypted, 'utf-8');
+  var decryptBuffer = Buffer.from(encrypted.toString('base64'), 'base64');
+  var decrypted = crypto.privateDecrypt(
+    {
+      key: privateKey,
+      passphrase: 'top secret',
+      padding: crypto.constants.RSA_PKCS1_PADDING
+    },
+    decryptBuffer
+  );
 
-  res.json({ decrypted });
+  const rawString = decrypted.toString();
+  const pw = encryptOneway(rawString);
+
+  res.json({ decrypted: rawString, oneway: pw });
+}
+
+function encryptOneway(rawString) {
+  crypto.DEFAULT_ENCODING = 'hex';
+  //salt는 user정보와 함께 저장 (회원가입시)
+  const key = crypto.pbkdf2Sync(rawString, 'salt', 100000, 128, 'sha512');
+  return key;
 }
 
 exports.decryptTest = decryptTest;
