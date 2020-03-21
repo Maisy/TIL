@@ -1,0 +1,52 @@
+# RSA encrypt
+- web에서 입력받는 pw를 encrypt해서 넘기고싶다
+
+### server
+```js
+const NodeRSA = require('node-rsa');
+const key = new NodeRSA({ b: 512 });
+const rsaKeyMap = {};
+
+//-------------------------------------------------------------
+// /api/rsa/publickey
+//-------------------------------------------------------------
+function getPublicKey(req, res, next) {
+  const publicKey = key.exportKey('pkcs8-public-pem');
+  const privateKey = key.exportKey('pkcs8-private-pem');
+  rsaKeyMap[publicKey] = privateKey;
+  res.json({ publicKey });
+}
+
+//-------------------------------------------------------------
+// /api/rsa/decrypt
+//-------------------------------------------------------------
+function decryptTest(req, res, next) {
+  const publicKey = req.body.publicKey;
+  const encrypted = req.body.encrypted;
+  const privateKeyStr = rsaKeyMap[publicKey];
+
+  const privateKey = new NodeRSA(privateKeyStr, 'pkcs8-private');
+  privateKey.setOptions({ encryptionScheme: 'pkcs1' });
+  const decrypted = privateKey.decrypt(encrypted, 'utf-8');
+
+  res.json({ decrypted });
+}
+
+exports.decryptTest = decryptTest;
+exports.getPublicKey = getPublicKey;
+
+
+```
+
+### client
+```js
+import JSEncrypt from 'jsencrypt';
+const encrypt = new JSEncrypt();
+
+//get public key from server
+const publicKey =
+  '-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMhlwTk/tM7BVtvSdHlJRsQ5e4l7VmN3\nqXEYxl7wgQw5hKKZB95tB8tE6ezGrnOlksnstddMTbQ4woRLzjgZarUCAwEAAQ==\n-----END PUBLIC KEY-----';
+encrypt.setPublicKey(publicKey);
+var encrypted = encrypt.encrypt('maisy');
+console.log(encrypted);
+```
