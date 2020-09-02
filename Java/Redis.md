@@ -4,6 +4,16 @@
 ## Redis Java client
 - [Lettuce](https://github.com/lettuce-io/lettuce-core) 사용
 
+## maven dependency
+```xml
+<!-- https://mvnrepository.com/artifact/io.lettuce/lettuce-core -->
+<dependency>
+  <groupId>io.lettuce</groupId>
+  <artifactId>lettuce-core</artifactId>
+  <version>5.3.3.RELEASE</version>
+</dependency>
+```
+
 ## Example
 
 `Application.java`
