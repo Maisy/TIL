@@ -34,7 +34,7 @@ const unitLabelMap: { years: string; months: string; days: string; hours: string
 const parseSimpleUnitDate = (durationObj: Duration, startUnitIndex: number) => {
   const unitList: string[] = Object.keys(unitLabelMap).slice(startUnitIndex, startUnitIndex + 2);
   return unitList
-    .filter((unit: DurationKey) => durationObj[unit] === 0)
+    .filter((unit: DurationKey) => durationObj[unit] !== 0)
     .map((unit: DurationKey) => `${durationObj[unit]} ${unitLabelMap[unit]}`)
     .join(' ');
 };
