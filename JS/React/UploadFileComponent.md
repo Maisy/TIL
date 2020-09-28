@@ -57,3 +57,39 @@ function UploadButton({ label = 'Upload File' }) {
 export default React.memo(UploadButton);
 
 ```
+
+## upload image file and show thumbnail
+```js
+export default function UploadImagePreview() {
+  const [imageUrl, setImageUrl] = React.useState(null);
+
+  const handelSelectedFile = React.useCallback(e => {
+    const reader = new FileReader();
+    reader.onload = function(onloadEvent) {
+      setImageUrl(onloadEvent.target.result);
+    };
+    const fileList = e.target.files;
+    if (fileList[0].type.startsWith('image')) {
+      reader.readAsDataURL(fileList[0]);
+    }
+  }, []);
+
+  return (
+    <div>
+      <input
+        type="file"
+        id="contained-button-file"
+        onChange={handelSelectedFile}
+        accept="image/*"
+      />
+      <label htmlFor="contained-button-file">
+        <Button variant="outlined" color="primary" component="span">
+          Upload file
+        </Button>
+      </label>
+      {imageUrl && <img src={imageUrl} alt="test" />}
+    </div>
+  );
+}
+```
+
