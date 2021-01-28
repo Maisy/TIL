@@ -1,0 +1,36 @@
+# 1. Instruction
+
+## Docker container 종류
+
+- LXC
+- LXD
+- LXCFS
+
+Docker는 LXC 컨테이너세팅을 사용.
+이 컨테이너를 세팅하는건 엄청 low level이라서 어렵다. 그래서 docker가 tool을 제공해.
+
+Docker는 OS위에 올라가.
+Linux중에서 ubuntu는 그냥 쓸수있고, fedra 등 다른 애들은 추가 application이 필요함.
+
+windows에서는 docker container를 실행시키지 못해.
+windows는 Linux virtual machind에서 linux container를 실행시키는거야.
+
+### Containers vs Virtual machins
+
+#### Virtual machins
+
+- 하드웨어 + Hypervisor
+- Hypervisor 위에 VM을 띄움.
+- VM은 OS + Libs + Deps + App
+- GB단위로 무거움
+
+#### Docker
+
+- 하드웨어 + OS + Docker + container
+- container는 Libs + Deps + App
+- MB단위. 빠름.
+
+### container vs image
+
+- docker image: package, teamplate, plan
+- container: image를 실행시킨 instance (하나의 image로 여러 container를 올릴수 있다)
